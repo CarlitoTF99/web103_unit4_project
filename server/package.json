@@ -3,10 +3,10 @@
   "type": "module",
   "version": "1.0.0",
   "main": "server.js",
-  "scripts": {
-    "reset": "node ./config/reset.js",
+"scripts": {
+    "reset": "node --env-file=.env ./config/reset.js",
     "start": "node --env-file=.env server.js",
-    "dev": "nodemon --env-file=.env server.js"
+    "dev":   "nodemon --env-file=.env server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

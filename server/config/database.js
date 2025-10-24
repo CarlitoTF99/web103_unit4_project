@@ -1,12 +1,11 @@
-import pg from 'pg';
+import pg from "pg";
+const { Pool } = pg;
 
-const config = {
+export const pool = new Pool({
   user: process.env.PGUSER,
   password: process.env.PGPASSWORD,
   host: process.env.PGHOST,
   port: process.env.PGPORT,
   database: process.env.PGDATABASE,
-  ssl: { rejectUnauthorized: false }
-};
-
-export const pool = new pg.Pool(config);
+  ssl: { require: true, rejectUnauthorized: false }
+});

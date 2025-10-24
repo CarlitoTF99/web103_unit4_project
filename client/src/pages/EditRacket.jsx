@@ -6,8 +6,6 @@ import {
 	updateRacket,
 	deleteRacket,
 } from "../services/RacketsAPI";
-import { computePrice } from "../utilities/price";
-import { validate } from "../utilities/validate";
 import RacketPreview from "../components/RacketPreview";
 import "../styles/EditRacket.css";
 
@@ -17,6 +15,7 @@ export default function EditRacket() {
 	const [cfg, setCfg] = useState(null);
 	const [err, setErr] = useState(null);
 
+	// Fetch the existing racket from DB
 	useEffect(() => {
 		(async () => {
 			const data = await getRacket(id);
@@ -27,17 +26,11 @@ export default function EditRacket() {
 	if (!cfg) return <div className="container">Loading...</div>;
 
 	const set = (k, v) => setCfg((prev) => ({ ...prev, [k]: v }));
-	const price = computePrice(cfg);
 
 	async function onUpdate(e) {
 		e.preventDefault();
-		const msg = validate(cfg);
-		if (msg) {
-			setErr(msg);
-			return;
-		}
 		const r = await updateRacket(id, cfg);
-		if (r.error) {
+		if (r?.error) {
 			setErr(r.error);
 			return;
 		}
@@ -66,7 +59,8 @@ export default function EditRacket() {
 				</div>
 			</div>
 
-			<RacketPreview cfg={cfg} price={price} />
+			{/* Preview the racket */}
+			<RacketPreview cfg={cfg} />
 
 			<form className="card" onSubmit={onUpdate}>
 				<div className="tabs">
@@ -89,7 +83,7 @@ export default function EditRacket() {
 						Racket Name
 						<input
 							className="input"
-							value={cfg.name}
+							value={cfg.name || ""}
 							onChange={(e) => set("name", e.target.value)}
 						/>
 					</label>
@@ -98,7 +92,7 @@ export default function EditRacket() {
 						Head Size
 						<select
 							className="input"
-							value={cfg.headsize}
+							value={cfg.headsize || ""}
 							onChange={(e) => set("headsize", e.target.value)}
 						>
 							{OPTIONS.headsize.map((o) => (
@@ -113,7 +107,7 @@ export default function EditRacket() {
 						Frame Color
 						<select
 							className="input"
-							value={cfg.framecolor}
+							value={cfg.framecolor || ""}
 							onChange={(e) => set("framecolor", e.target.value)}
 						>
 							{OPTIONS.framecolor.map((o) => (
@@ -128,7 +122,7 @@ export default function EditRacket() {
 						Grip Size
 						<select
 							className="input"
-							value={cfg.grip}
+							value={cfg.grip || ""}
 							onChange={(e) => set("grip", e.target.value)}
 						>
 							{OPTIONS.grip.map((o) => (
@@ -143,7 +137,7 @@ export default function EditRacket() {
 						String Pattern
 						<select
 							className="input"
-							value={cfg.stringpattern}
+							value={cfg.stringpattern || ""}
 							onChange={(e) => set("stringpattern", e.target.value)}
 						>
 							{OPTIONS.stringpattern.map((o) => (
@@ -157,7 +151,7 @@ export default function EditRacket() {
 					<label className="row" style={{ marginTop: 24 }}>
 						<input
 							type="checkbox"
-							checked={cfg.extended}
+							checked={cfg.extended || false}
 							onChange={(e) => set("extended", e.target.checked)}
 						/>
 						<span>Extended Length (27.5")</span>
@@ -166,7 +160,7 @@ export default function EditRacket() {
 					<label className="row">
 						<input
 							type="checkbox"
-							checked={cfg.custompaint}
+							checked={cfg.custompaint || false}
 							onChange={(e) => set("custompaint", e.target.checked)}
 						/>
 						<span>Custom Paint</span>
